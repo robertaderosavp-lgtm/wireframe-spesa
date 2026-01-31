@@ -95,6 +95,8 @@
     .imgPh{
       width:72px; height:72px; border-radius:12px; background:var(--soft);
       border:1px dashed var(--line); flex:0 0 auto;
+      display:flex; align-items:center; justify-content:center;
+      color: var(--muted); font-size:12px; font-weight:800;
     }
     .cardTitle{ font-weight:800; margin:2px 0 6px; font-size:14px; }
     .meta{ font-size:12px; color:var(--muted); }
@@ -127,6 +129,7 @@
       background: #fff; border:1px dashed var(--line);
       display:flex; align-items:center; justify-content:center;
       font-size:12px; color:var(--muted);
+      font-weight:800;
     }
     .bannerActions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
     .bannerBtn{
@@ -152,7 +155,7 @@
       padding:6px 10px; font-size:12px; cursor:pointer; color: var(--muted);
     }
 
-    /* Contexts / Occasions */
+    /* Occasions / Context */
     .contextChips{
       display:flex; gap:8px; overflow:auto; -webkit-overflow-scrolling: touch;
       padding-bottom: 4px;
@@ -202,6 +205,7 @@
       justify-content:center;
       font-size:12px;
       color: var(--muted);
+      font-weight:800;
     }
     .hCard .title{
       font-weight: 900;
@@ -302,6 +306,7 @@
       font-size:12px;
       color: var(--muted);
       flex: 0 0 auto;
+      font-weight:800;
     }
     .author{
       flex:1;
@@ -400,6 +405,7 @@
       justify-content:center;
       color: var(--muted);
       font-size:12px;
+      font-weight:800;
     }
     .catTile .name{
       font-weight: 900;
@@ -482,6 +488,249 @@
       font-weight: 900;
       padding-top: 2px;
     }
+
+    /* =========================
+       RECIPE DETAIL AREA - with the requested examples
+       ========================= */
+    .hero{
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .heroImg{
+      height:170px;
+      background: linear-gradient(135deg, #f0f0f0, #ffffff);
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:center;
+      color: var(--muted);
+      font-weight:900;
+    }
+    .heroBody{ padding:12px; }
+    .idRow{
+      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+      margin-top:2px;
+    }
+    .rid{
+      font-size:11px; color:var(--muted);
+      border:1px solid var(--line);
+      background:#fff;
+      padding:4px 8px;
+      border-radius:999px;
+      width: fit-content;
+      max-width: 100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .linkLike{
+      font-size:12px;
+      color: var(--ink);
+      border:1px solid var(--line);
+      background:#fff;
+      padding:6px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .ingTable{
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      background:#fff;
+      margin-top:12px;
+    }
+    .ingHead{
+      display:grid;
+      grid-template-columns: 1fr 64px 70px;
+      gap:8px;
+      padding:10px 12px;
+      background: var(--soft);
+      border-bottom:1px solid var(--line);
+      font-size:12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .ingRow{
+      display:grid;
+      grid-template-columns: 1fr 64px 70px;
+      gap:8px;
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      align-items:start;
+    }
+    .ingRow:last-child{ border-bottom:none; }
+    .ingName{ font-size:13px; font-weight: 900; }
+    .ingQty{ font-size:13px; color: var(--muted); text-align:right; padding-top:2px; }
+    .ingPrice{ font-size:13px; text-align:right; padding-top:2px; }
+
+    /* Selected product (clickable) */
+    .prodChip{
+      margin-top:8px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 10px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      width: 100%;
+    }
+    .prodImg{
+      width:38px;
+      height:38px;
+      border-radius:14px;
+      border:1px dashed var(--line);
+      background: var(--soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: var(--muted);
+      font-size:11px;
+      flex:0 0 auto;
+      font-weight:800;
+    }
+    .prodInfo{ flex:1; min-width:0; }
+    .prodName{
+      font-size:12px;
+      font-weight: 900;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      margin-bottom: 2px;
+    }
+    .prodMeta{
+      font-size:11px;
+      color: var(--muted);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    /* Modals */
+    .modalOverlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      z-index: 1000;
+      padding: 14px;
+    }
+    .modalOverlay.show{ display:flex; }
+    .modal{
+      width: min(520px, 100%);
+      max-height: 84vh;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+    }
+    .modalHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:12px;
+      border-bottom:1px solid var(--line);
+    }
+    .modalHeader .title{
+      font-weight: 900;
+      font-size: 14px;
+    }
+    .closeBtn{
+      width:34px;
+      height:34px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      font-weight: 900;
+    }
+    .modalBody{
+      padding:12px;
+      overflow:auto;
+    }
+    .sectionTitle{
+      font-weight: 900;
+      margin: 10px 0 6px;
+      font-size: 13px;
+    }
+    .bullet{
+      margin:0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .prep{
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    /* Alternative products grid (2 columns) */
+    .altGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .altCard{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:10px;
+      background:#fff;
+    }
+    .altTop{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-bottom:8px;
+    }
+    .altImg{
+      width:40px;
+      height:40px;
+      border-radius:14px;
+      border:1px dashed var(--line);
+      background: var(--soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: var(--muted);
+      font-size:11px;
+      flex:0 0 auto;
+      font-weight:800;
+    }
+    .altName{
+      font-weight: 900;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+    .altMeta{
+      font-size: 11px;
+      color: var(--muted);
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:4px;
+    }
+    .primaryPill{
+      border:1px solid var(--ink);
+      background: var(--ink);
+      color:#fff;
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      cursor:pointer;
+      width:100%;
+      margin-top:10px;
+    }
   </style>
 </head>
 <body>
@@ -495,7 +744,9 @@
     </div>
   </div>
 
-  <div class="note">Home updated: Social section added between “Who are you?” and “Suggested for you today”. The click message on “Suggested for you today” has been updated.</div>
+  <div class="note">
+    Home + Catalog as before. Recipe page: dish image, popup Info/Description/Preparation, ingredients with clickable selected product → popup alternatives (2 columns, vertical scroll).
+  </div>
 
   <div class="wrap">
     <div class="phone">
@@ -518,7 +769,7 @@
                 <div>
                   <div class="bannerLabel">🏷️ Brand promotion</div>
                   <div class="bannerTitle">Pesto pasta, ready in 15 minutes</div>
-                  <div class="bannerDesc">Promo ingredients: pesto + pasta. Perfect for a quick, budget-friendly meal.</div>
+                  <div class="bannerDesc">Promo ingredients: pesto + pasta. Perfect for a quick, affordable meal.</div>
                   <div class="tags">
                     <span class="tag">quick</span>
                     <span class="tag">main</span>
@@ -537,8 +788,8 @@
               <div class="bannerTop">
                 <div>
                   <div class="bannerLabel">👨‍🍳 Chef pick</div>
-                  <div class="bannerTitle">A “chef-style” dish to impress at dinner</div>
-                  <div class="bannerDesc">Special selection with premium pasta. Ideal for a more “wow” dinner.</div>
+                  <div class="bannerTitle">A chef-style recipe to impress</div>
+                  <div class="bannerDesc">Special selection with premium pasta. Ideal for a “wow” dinner.</div>
                   <div class="tags">
                     <span class="tag">chef</span>
                     <span class="tag">main</span>
@@ -557,7 +808,7 @@
               <div class="bannerTop">
                 <div>
                   <div class="bannerLabel">🥗 Healthy pick</div>
-                  <div class="bannerTitle">A healthy menu with selected products</div>
+                  <div class="bannerTitle">Healthy menu with selected products</div>
                   <div class="bannerDesc">Recommended recipe with “green” ingredients and a quality focus.</div>
                   <div class="tags">
                     <span class="tag">green</span>
@@ -607,10 +858,10 @@
             </div>
           </div>
 
-          <!-- Contexts -->
+          <!-- Occasions & contexts -->
           <div class="divider"></div>
           <div class="h2">Occasions & contexts</div>
-          <div class="p">Ideas to plan lunches and dinners based on the situation, with helpful proposals and optimized ingredients.</div>
+          <div class="p">Ideas to plan lunches and dinners by situation, with smart proposals and optimized ingredients.</div>
 
           <div class="contextChips" id="contextChips">
             <div class="contextChip active" data-context="family">👨‍👩‍👧‍👦 Family dinner</div>
@@ -624,26 +875,26 @@
 
           <div class="divider"></div>
 
-          <!-- Who are you -->
+          <!-- Persona -->
           <div class="h2">Who are you?</div>
           <div class="chips" id="personaChips">
             <div class="chip active" data-value="green">🌱 Green lover</div>
             <div class="chip" data-value="family">👨‍👩‍👧‍👦 Family</div>
             <div class="chip" data-value="single">🧍 Single / Couple</div>
           </div>
-          <div class="hint" id="personaHint">Tips: supply chains, seasonality, reduced waste.</div>
+          <div class="hint" id="personaHint">Tips: supply chain, seasonality, reduced waste.</div>
 
           <!-- Social -->
           <div class="divider"></div>
           <div class="h2">From the community to your cart</div>
-          <div class="p">Discover recipes shared by other people, read comments and save the best ones to your profile with one tap.</div>
+          <div class="p">Discover recipes shared by others, read comments and save the best ones to your profile with one tap.</div>
 
           <div class="socialPromo" id="socialPromo">
             <div class="socialPromoTop">
               <div>
-                <div class="socialBadge">💬 Social area (in-app)</div>
+                <div class="socialBadge">💬 Social area (in app)</div>
                 <div class="socialTitle">Get inspired, save, cook</div>
-                <div class="socialDesc">Community recipes become your grocery list: save them with <strong>+</strong> and add ingredients to your cart.</div>
+                <div class="socialDesc">Community recipes become your groceries: save them with <strong>+</strong> and add ingredients to your cart.</div>
                 <div class="tags">
                   <span class="tag">community</span>
                   <span class="tag">reviews</span>
@@ -656,7 +907,6 @@
               </div>
             </div>
 
-            <!-- Example post -->
             <div class="postCard" id="socialPostRoberta">
               <div class="postHeader">
                 <div style="display:flex; gap:10px; align-items:center;">
@@ -670,7 +920,7 @@
               </div>
 
               <div class="postBodyTitle">Chickpea patties (easy)</div>
-              <div class="postBodyText">“Crispy outside, soft inside. Perfect for meal prep too.”</div>
+              <div class="postBodyText">“Crispy outside, soft inside. Great for meal prep too.”</div>
 
               <div class="comment">
                 <span>Comment:</span> “Thanks Roberta, I tried your recipe and it was a hit!”
@@ -695,7 +945,7 @@
             <div class="h2" style="margin:0;">Catalog</div>
             <button class="iconBtn" id="goCatalogoCategories" title="Go to categories">☰</button>
           </div>
-          <div class="p">Browse by categories: open a recipe quickly or jump into the full category list.</div>
+          <div class="p">Browse by categories: open a recipe quickly or jump into the category list.</div>
 
           <div class="catGrid" id="catalogPreview"></div>
 
@@ -706,181 +956,4 @@
         </div>
 
         <div class="navBar">
-          <div class="navItem active" data-nav="home">Home</div>
-          <div class="navItem" data-nav="catalogo">Recipes</div>
-          <div class="navItem" data-nav="planner">Menu</div>
-          <div class="navItem" data-nav="spesa">Groceries</div>
-        </div>
-      </div>
-
-      <!-- CATALOG: Categories -->
-      <div class="screen" id="catalogo">
-        <div class="content">
-          <div class="h1">Catalog</div>
-          <div class="breadcrumbs">Catalog</div>
-          <div class="p">Select a category to view subcategories and recipes.</div>
-
-          <div class="list" id="catalogCategories"></div>
-
-          <div class="btnRow">
-            <button class="btn secondary" data-nav="home">Back to Home</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- CATALOG: Category -->
-      <div class="screen" id="catalogo_category">
-        <div class="content">
-          <div class="h1" id="catTitle">Category</div>
-          <div class="breadcrumbs" id="catCrumbs">Catalog → Category</div>
-          <div class="p">Choose a subcategory.</div>
-
-          <div class="list" id="catalogSubcats"></div>
-
-          <div class="btnRow">
-            <button class="btn secondary" data-nav="catalogo">Back (categories)</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- CATALOG: Subcategory -->
-      <div class="screen" id="catalogo_subcategory">
-        <div class="content">
-          <div class="h1" id="subcatTitle">Subcategory</div>
-          <div class="breadcrumbs" id="subcatCrumbs">Catalog → Category → Subcategory</div>
-          <div class="p">Select a recipe to open details.</div>
-
-          <div class="cards" id="subcatRecipes"></div>
-
-          <div class="btnRow">
-            <button class="btn secondary" id="backToCategoryBtn">Back (category)</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- DETAIL -->
-      <div class="screen" id="detail">
-        <div class="content">
-          <div class="h1" id="detailTitle">Recipe</div>
-          <div class="breadcrumbs" id="detailCrumbs">Catalog → … → Recipe</div>
-          <div class="p" id="detailText">Recipe details placeholder.</div>
-          <div class="btnRow">
-            <button class="btn secondary" id="detailBackBtn">Back</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- PLANNER -->
-      <div class="screen" id="planner">
-        <div class="content">
-          <div class="h1">Weekly menu (placeholder)</div>
-          <div class="p">The planner will live here.</div>
-          <div class="btnRow">
-            <button class="btn secondary" data-nav="home">Back to Home</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- GROCERIES -->
-      <div class="screen" id="spesa">
-        <div class="content">
-          <div class="h1">Grocery list (placeholder)</div>
-          <div class="p">The aggregated grocery list will live here.</div>
-          <div class="btnRow">
-            <button class="btn secondary" data-nav="home">Back to Home</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <script>
-    // ---------- NAV ----------
-    const tabs = Array.from(document.querySelectorAll('.tab'));
-    const screens = Array.from(document.querySelectorAll('.screen'));
-    let navStack = ["home"];
-
-    function show(id){
-      screens.forEach(s => s.classList.toggle('active', s.id === id));
-      tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.target === id)));
-      document.querySelectorAll('.navItem').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
-      document.querySelector('.phone').scrollIntoView({behavior:'smooth', block:'start'});
-      if (navStack[navStack.length - 1] !== id) navStack.push(id);
-    }
-    function back(){
-      if (navStack.length <= 1) return show("home");
-      navStack.pop();
-      const prev = navStack[navStack.length - 1] || "home";
-      screens.forEach(s => s.classList.toggle('active', s.id === prev));
-      tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.target === prev)));
-      document.querySelectorAll('.navItem').forEach(n => n.classList.toggle('active', n.dataset.nav === prev));
-      document.querySelector('.phone').scrollIntoView({behavior:'smooth', block:'start'});
-    }
-
-    tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.target)));
-    document.querySelectorAll('[data-nav]').forEach(el => el.addEventListener('click', () => show(el.getAttribute('data-nav'))));
-    document.querySelectorAll('.navItem').forEach(el => el.addEventListener('click', () => show(el.getAttribute('data-nav'))));
-
-    // ---------- STATE ----------
-    let selectedPersona = "green";
-    let activeHomeFilter = null;
-    let activeSeason = null;
-
-    const personaHint = document.getElementById('personaHint');
-    const hints = {
-      green: "Tips: supply chains, seasonality, reduced waste.",
-      family: "Tips: 3+ portions, simple recipes, value-size formats.",
-      single: "Tips: small portions, reusable ingredients, quick recipes."
-    };
-
-    // Click message for "Suggested for you today"
-    const suggestedClickMessage = "Recommended recipes based on your profile (green/family/single), recent orders, seasonality and active promotions.";
-
-    // ---------- DATA (demo) ----------
-    const HOME_RECIPES = [
-      {id:"p3", name:"Pesto pasta", time:15, meal:"Main", tags:["quick","promo"], why:"Active promo + quick"},
-      {id:"p4", name:"Carbonara (chef version)", time:20, meal:"Main", tags:["traditional","chef","promo"], why:"Chef inspiration + promo"},
-      {id:"p9", name:"Pasta & beans", time:35, meal:"Main", tags:["green","healthy"], why:"Seasonal + healthy"},
-      {id:"s5", name:"Omelette (seasonal veggies)", time:15, meal:"Main", tags:["budget","green","seasonal","february"], why:"Seasonality (February)"},
-      {id:"a7", name:"Grilled vegetables", time:20, meal:"Starter", tags:["green","healthy"], why:"Light + green"},
-      {id:"c4", name:"Yogurt & cereal", time:2, meal:"Breakfast", tags:["healthy","quick"], why:"Fast breakfast"},
-      {id:"s7", name:"Chickpea patties", time:30, meal:"Main", tags:["green","healthy"], why:"Very popular + green"},
-    ];
-
-    const CATALOG = [
-      { id:"cat_primi", name:"Mains", desc:"Pasta, rice, soups",
-        subcategories:[
-          { id:"sub_pasta", name:"Pasta", desc:"Classic and quick pasta recipes", recipes:[
-            {id:"p3", name:"Pesto pasta", time:15, meal:"Main", tags:["quick","promo"]},
-            {id:"p4", name:"Carbonara (chef version)", time:20, meal:"Main", tags:["traditional","chef","promo"]},
-            {id:"p9", name:"Pasta & beans", time:35, meal:"Main", tags:["green","healthy"]},
-          ]},
-          { id:"sub_riso", name:"Rice", desc:"Risottos and bowls", recipes:[
-            {id:"p6", name:"Mushroom risotto", time:35, meal:"Main", tags:["traditional"]},
-            {id:"p7", name:"Veggie basmati rice", time:25, meal:"Main", tags:["green","healthy"]},
-          ]}
-        ]
-      },
-      { id:"cat_secondi", name:"Second courses", desc:"Meat, fish, eggs, veggie",
-        subcategories:[
-          { id:"sub_uova", name:"Eggs", desc:"Omelettes and frittatas", recipes:[
-            {id:"s5", name:"Omelette (seasonal veggies)", time:15, meal:"Main", tags:["budget","green","seasonal","february"]},
-            {id:"s6", name:"Simple omelette", time:10, meal:"Main", tags:["quick"]},
-          ]},
-          { id:"sub_veggie", name:"Veggie", desc:"Vegetarian mains", recipes:[
-            {id:"s7", name:"Chickpea patties", time:30, meal:"Main", tags:["green","healthy"]},
-          ]}
-        ]
-      },
-      { id:"cat_colazione", name:"Breakfast", desc:"Sweet and savory",
-        subcategories:[
-          { id:"sub_veloce", name:"Quick", desc:"Ready in minutes", recipes:[
-            {id:"c4", name:"Yogurt & cereal", time:2, meal:"Breakfast", tags:["healthy","quick"]},
-            {id:"c5", name:"Toast & fruit", time:5, meal:"Breakfast", tags:["quick"]},
-          ]}
-        ]
-      },
-      { id:"cat_merende", name:"Snacks", desc:"Light bites and ideas",
-        subcategories:[
-          { id
+          <div class="navItem active"
