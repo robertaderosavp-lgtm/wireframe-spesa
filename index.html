@@ -1,0 +1,1241 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>La spesa che parte da ciò che cucini</title>
+  <style>
+    :root{
+      --bg:#f6f6f6;
+      --card:#ffffff;
+      --ink:#111;
+      --muted:#666;
+      --line:#cfcfcf;
+      --soft:#efefef;
+      --cta:#111;
+      --ctaText:#fff;
+      --radius:14px;
+      --shadow: 0 2px 10px rgba(0,0,0,.06);
+      --max: 430px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    /* Top tabs */
+    .topbar{ position: sticky; top:0; z-index: 10; background:#fff; border-bottom:1px solid var(--line); }
+    .tabs{
+      max-width:1100px; margin:0 auto; padding:10px 12px;
+      display:flex; gap:8px; overflow:auto; -webkit-overflow-scrolling: touch;
+    }
+    .tab{
+      border:1px solid var(--line); background:#fff; color:var(--ink);
+      padding:8px 10px; border-radius:999px; font-size:13px; cursor:pointer; white-space:nowrap;
+    }
+    .tab[aria-selected="true"]{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+    .note{ max-width:1100px; margin:0 auto; padding: 0 12px 8px; color: var(--muted); font-size:13px; }
+
+    /* Layout */
+    .wrap{
+      max-width:1100px; margin: 14px auto 80px; padding:0 12px;
+      display:grid; grid-template-columns: 1fr; gap:14px;
+    }
+    @media (min-width:980px){ .wrap{ grid-template-columns:1fr 1fr; } }
+
+    /* Phone */
+    .phone{
+      background:#fff; border:1px solid var(--line); border-radius:28px;
+      box-shadow: var(--shadow); overflow:hidden; justify-self:center;
+      width: min(var(--max), 100%);
+    }
+    .phoneHeader{
+      height:52px; padding:0 16px; display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid var(--line); background:#fff;
+    }
+    .logo{ font-weight:900; letter-spacing:.2px; font-size:14px; }
+    .badge{
+      font-size:12px; padding:4px 8px; border-radius:999px;
+      border:1px solid var(--line); color:var(--muted); background:#fff;
+    }
+    .content{ padding:16px; background:#fff; }
+    .h1{ font-size:20px; line-height:1.2; margin:6px 0 10px; font-weight:900; }
+    .h2{ font-size:14px; margin:16px 0 8px; font-weight:800; }
+    .p{ margin:0 0 10px; color:var(--muted); font-size:13px; line-height:1.35; }
+    .divider{ height:1px; background:var(--line); margin:14px 0; }
+
+    /* Buttons */
+    .btn{
+      width:100%; border-radius:12px; padding:12px 14px;
+      font-size:14px; font-weight:700; cursor:pointer;
+      border:1px solid var(--ink); background:var(--ink); color:var(--ctaText);
+    }
+    .btn.secondary{ background:#fff; color:var(--ink); border-color: var(--line); }
+    .btnRow{ display:flex; flex-direction:column; gap:10px; margin:10px 0 6px; }
+
+    /* Persona chips */
+    .chips{ display:flex; gap:10px; flex-wrap:wrap; }
+    .chip{
+      padding:10px 12px; border-radius:999px; border:1px solid var(--line);
+      background:#fff; font-size:13px; cursor:pointer; user-select:none;
+    }
+    .chip.active{ border-color:var(--ink); background:var(--soft); font-weight:800; }
+    .hint{ font-size:12px; color:var(--muted); margin-top:6px; }
+
+    /* Cards */
+    .cards{ display:flex; flex-direction:column; gap:12px; margin-top:12px; }
+    .card{
+      border:1px solid var(--line); border-radius:var(--radius); background:var(--card);
+      display:flex; gap:12px; padding:12px; cursor:pointer;
+    }
+    .imgPh{
+      width:72px; height:72px; border-radius:12px; background:var(--soft);
+      border:1px dashed var(--line); flex:0 0 auto;
+    }
+    .cardTitle{ font-weight:800; margin:2px 0 6px; font-size:14px; }
+    .meta{ font-size:12px; color:var(--muted); }
+
+    .tags{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+    .tag{
+      font-size:11px; padding:4px 8px; border-radius:999px;
+      background:var(--soft); border:1px solid var(--line);
+    }
+
+    /* Banner carousel */
+    .bannerWrap{ border:1px solid var(--line); border-radius:18px; overflow:hidden; background:#fff; }
+    .banner{
+      display:none; padding:14px; min-height: 150px; position: relative;
+      background: linear-gradient(135deg, #f0f0f0, #ffffff);
+    }
+    .banner.active{ display:block; }
+    .bannerTop{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+    .bannerLabel{
+      display:inline-flex; gap:6px; align-items:center;
+      font-size:11px; color:var(--muted);
+      border:1px solid var(--line); background:#fff;
+      padding:4px 8px; border-radius:999px; width: fit-content;
+    }
+    .bannerTitle{ font-weight:900; font-size:16px; margin:8px 0 6px; }
+    .bannerDesc{ font-size:12px; color:var(--muted); margin:0 0 10px; line-height:1.3; max-width: 95%; }
+    .bannerArt{
+      position:absolute; right:12px; top:12px;
+      width:88px; height:88px; border-radius:18px;
+      background: #fff; border:1px dashed var(--line);
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; color:var(--muted);
+    }
+    .bannerActions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .bannerBtn{
+      border:1px solid var(--ink); border-radius:999px;
+      padding:8px 10px; font-size:12px; cursor:pointer;
+      background: var(--ink); color:#fff;
+    }
+    .bannerBtn.secondary{ background:#fff; color:var(--ink); border-color: var(--line); }
+    .dots{
+      display:flex; gap:6px; padding:10px 12px;
+      border-top:1px solid var(--line); background:#fff;
+      align-items:center; justify-content:space-between;
+    }
+    .dotGroup{ display:flex; gap:6px; }
+    .dot{
+      width:8px; height:8px; border-radius:999px;
+      border:1px solid var(--line); background:#fff; cursor:pointer;
+    }
+    .dot.active{ background:var(--ink); border-color:var(--ink); }
+    .dotActions{ display:flex; gap:8px; }
+    .miniBtn{
+      border:1px solid var(--line); background:#fff; border-radius:999px;
+      padding:6px 10px; font-size:12px; cursor:pointer; color: var(--muted);
+    }
+
+    /* Contesti / Occasioni */
+    .contextChips{
+      display:flex; gap:8px; overflow:auto; -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+    .contextChip{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      cursor:pointer;
+      white-space: nowrap;
+    }
+    .contextChip.active{
+      border-color: var(--ink);
+      background: var(--soft);
+      font-weight: 900;
+    }
+    .hCards{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+      margin-top: 10px;
+    }
+    .hCard{
+      min-width: 260px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      padding:12px;
+      cursor:pointer;
+      position: relative;
+    }
+    .hCard .art{
+      position:absolute;
+      right:12px;
+      top:12px;
+      width:56px;
+      height:56px;
+      border-radius:14px;
+      border:1px dashed var(--line);
+      background: var(--soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      color: var(--muted);
+    }
+    .hCard .title{
+      font-weight: 900;
+      margin: 2px 0 6px;
+      font-size: 14px;
+      padding-right: 70px;
+    }
+    .hCard .desc{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.3;
+      margin: 0 0 10px;
+      padding-right: 70px;
+    }
+    .hCard .ctaRow{
+      display:flex;
+      gap:8px;
+      flex-wrap: wrap;
+    }
+    .pillBtn{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      cursor:pointer;
+      white-space: nowrap;
+    }
+    .pillBtn.primary{
+      border-color: var(--ink);
+      background: var(--ink);
+      color:#fff;
+    }
+
+    /* NEW: Social promo module */
+    .socialPromo{
+      border:1px solid var(--line);
+      background: linear-gradient(135deg, #f0f0f0, #ffffff);
+      border-radius:18px;
+      padding:12px;
+      position: relative;
+      overflow:hidden;
+    }
+    .socialPromoTop{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .socialBadge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      color:var(--muted);
+      border:1px solid var(--line);
+      background:#fff;
+      padding:4px 8px;
+      border-radius:999px;
+      width: fit-content;
+    }
+    .socialTitle{
+      font-weight: 900;
+      font-size: 15px;
+      margin: 8px 0 6px;
+    }
+    .socialDesc{
+      font-size:12px;
+      color: var(--muted);
+      line-height:1.3;
+      margin:0 0 10px;
+      max-width: 95%;
+    }
+    .postCard{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:12px;
+      margin-top:10px;
+      position: relative;
+    }
+    .postHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .avatar{
+      width:34px;
+      height:34px;
+      border-radius:12px;
+      background: var(--soft);
+      border:1px dashed var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      color: var(--muted);
+      flex: 0 0 auto;
+    }
+    .author{
+      flex:1;
+      font-size:12px;
+      color: var(--muted);
+      line-height:1.2;
+    }
+    .author strong{ color: var(--ink); font-size:13px; }
+    .savePlus{
+      width:30px;
+      height:30px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      color: var(--ink);
+    }
+    .postBodyTitle{
+      font-weight: 900;
+      margin:0 0 6px;
+      font-size: 14px;
+    }
+    .postBodyText{
+      margin:0 0 10px;
+      font-size:12px;
+      color: var(--muted);
+      line-height:1.3;
+    }
+    .comment{
+      border-top:1px dashed var(--line);
+      padding-top:8px;
+      font-size:12px;
+      color: var(--ink);
+    }
+    .comment span{
+      color: var(--muted);
+    }
+    .postActions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    /* NEW: Catalogo preview (home) */
+    .catHeaderRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .iconBtn{
+      width:36px;
+      height:36px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: var(--muted);
+      font-weight: 900;
+    }
+    .catGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    .catTile{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:12px;
+      cursor:pointer;
+      position: relative;
+      min-height: 120px;
+      overflow:hidden;
+    }
+    .catTile .miniArt{
+      position:absolute;
+      right:10px;
+      top:10px;
+      width:44px;
+      height:44px;
+      border-radius:12px;
+      border:1px dashed var(--line);
+      background: var(--soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: var(--muted);
+      font-size:12px;
+    }
+    .catTile .name{
+      font-weight: 900;
+      margin-bottom: 6px;
+      padding-right: 54px;
+    }
+    .catTile .sub{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.3;
+      padding-right: 54px;
+      margin-bottom: 10px;
+    }
+    .miniRecipe{
+      font-size: 12px;
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      padding:6px 0;
+      border-top:1px dashed var(--line);
+      color: var(--ink);
+      cursor:pointer;
+    }
+    .miniRecipe span{
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* Bottom nav */
+    .navBar{
+      position: sticky; bottom: 0;
+      display:flex; justify-content: space-around;
+      padding: 8px 8px 10px;
+      background:#fff; border-top: 1px solid var(--line);
+    }
+    .navItem{
+      font-size: 11px; color: var(--muted); cursor:pointer;
+      padding:6px 10px; border-radius:12px; border:1px solid transparent;
+    }
+    .navItem.active{ color:var(--ink); border-color:var(--line); background:var(--soft); font-weight:800; }
+
+    /* Hide/show screens */
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+
+    /* Catalogo screens */
+    .breadcrumbs{
+      font-size: 12px;
+      color: var(--muted);
+      margin: 6px 0 10px;
+    }
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+    }
+    .listItem{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:14px;
+      padding:12px;
+      cursor:pointer;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .listItem .title{
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+    .listItem .desc{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+    .chev{
+      color: var(--muted);
+      font-weight: 900;
+      padding-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-target="home">Home</button>
+      <button class="tab" role="tab" aria-selected="false" data-target="catalogo">Catalogo</button>
+      <button class="tab" role="tab" aria-selected="false" data-target="catalogo_category">Cat.</button>
+      <button class="tab" role="tab" aria-selected="false" data-target="catalogo_subcategory">Subcat.</button>
+      <button class="tab" role="tab" aria-selected="false" data-target="detail">Ricetta</button>
+    </div>
+  </div>
+
+  <div class="note">Home aggiornata: inserita sezione Social tra “Per chi sei?” e “Suggeriti oggi per te”. Messaggio click su “Suggeriti oggi per te” aggiornato.</div>
+
+  <div class="wrap">
+    <div class="phone">
+      <div class="phoneHeader">
+        <div class="logo">La spesa che parte da ciò che cucini</div>
+        <div class="badge" id="activePromoBadge">Promo: —</div>
+      </div>
+
+      <!-- HOME -->
+      <div class="screen active" id="home">
+        <div class="content">
+          <div class="h1">La spesa che parte da ciò che cucini</div>
+          <div class="p">Scegli ricette. Noi generiamo la lista spesa (anti spreco, più risparmio).</div>
+
+          <!-- BANNER CAROUSEL -->
+          <div class="h2">In evidenza (brand & stagionalità)</div>
+          <div class="bannerWrap" id="bannerWrap">
+            <div class="banner active" data-banner="barilla" data-promo="Brand: Barilla • Pesto">
+              <div class="bannerTop">
+                <div>
+                  <div class="bannerLabel">🏷️ Promozione brand</div>
+                  <div class="bannerTitle">Pasta al pesto, pronta in 15 minuti</div>
+                  <div class="bannerDesc">Promo ingredienti: pesto + pasta. Perfetta per un menu veloce e conveniente.</div>
+                  <div class="tags">
+                    <span class="tag">veloce</span>
+                    <span class="tag">primo</span>
+                    <span class="tag">promo</span>
+                  </div>
+                  <div class="bannerActions">
+                    <button class="bannerBtn" data-open-recipe="p3">Apri ricetta</button>
+                    <button class="bannerBtn secondary" data-apply-filter="veloce">Filtra: veloce</button>
+                  </div>
+                </div>
+                <div class="bannerArt">IMG</div>
+              </div>
+            </div>
+
+            <div class="banner" data-banner="voiello" data-promo="Brand: Voiello • Chef">
+              <div class="bannerTop">
+                <div>
+                  <div class="bannerLabel">👨‍🍳 Ricetta con chef</div>
+                  <div class="bannerTitle">Ricetta “da chef” per stupire a cena</div>
+                  <div class="bannerDesc">Selezione speciale con pasta premium. Ideale per una cena più “wow”.</div>
+                  <div class="tags">
+                    <span class="tag">chef</span>
+                    <span class="tag">primo</span>
+                    <span class="tag">promo</span>
+                  </div>
+                  <div class="bannerActions">
+                    <button class="bannerBtn" data-open-recipe="p4">Apri ricetta</button>
+                    <button class="bannerBtn secondary" data-apply-filter="tradizionale">Filtra: tradizionale</button>
+                  </div>
+                </div>
+                <div class="bannerArt">IMG</div>
+              </div>
+            </div>
+
+            <div class="banner" data-banner="naturasì" data-promo="Retail: NaturaSì • Healthy">
+              <div class="bannerTop">
+                <div>
+                  <div class="bannerLabel">🥗 Ricetta healthy</div>
+                  <div class="bannerTitle">Menu sano con prodotti selezionati</div>
+                  <div class="bannerDesc">Ricetta consigliata con ingredienti “green” e focus qualità.</div>
+                  <div class="tags">
+                    <span class="tag">green</span>
+                    <span class="tag">salutare</span>
+                    <span class="tag">promo</span>
+                  </div>
+                  <div class="bannerActions">
+                    <button class="bannerBtn" data-open-recipe="p9">Apri ricetta</button>
+                    <button class="bannerBtn secondary" data-apply-filter="green">Filtra: green</button>
+                  </div>
+                </div>
+                <div class="bannerArt">IMG</div>
+              </div>
+            </div>
+
+            <div class="banner" data-banner="stagione" data-promo="Stagione: Febbraio • Cavolo">
+              <div class="bannerTop">
+                <div>
+                  <div class="bannerLabel">🗓️ Stagionalità</div>
+                  <div class="bannerTitle">Febbraio: ricette con cavolo</div>
+                  <div class="bannerDesc">Idee di stagione per risparmiare e ridurre sprechi (prodotti più disponibili).</div>
+                  <div class="tags">
+                    <span class="tag">stagionale</span>
+                    <span class="tag">green</span>
+                    <span class="tag">febbraio</span>
+                  </div>
+                  <div class="bannerActions">
+                    <button class="bannerBtn" data-open-recipe="s5">Apri ricetta</button>
+                    <button class="bannerBtn secondary" data-apply-season="febbraio">Vedi ricette di stagione</button>
+                  </div>
+                </div>
+                <div class="bannerArt">IMG</div>
+              </div>
+            </div>
+
+            <div class="dots">
+              <div class="dotGroup" id="dotGroup">
+                <div class="dot active" data-dot="0"></div>
+                <div class="dot" data-dot="1"></div>
+                <div class="dot" data-dot="2"></div>
+                <div class="dot" data-dot="3"></div>
+              </div>
+              <div class="dotActions">
+                <button class="miniBtn" id="prevBtn">◀</button>
+                <button class="miniBtn" id="nextBtn">▶</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Occasioni & Contesti -->
+          <div class="divider"></div>
+          <div class="h2">Occasioni & contesti</div>
+          <div class="p">Idee per organizzare pranzi e cene in base alla situazione, con proposte utili e ingredienti ottimizzati.</div>
+
+          <div class="contextChips" id="contextChips">
+            <div class="contextChip active" data-context="famiglia">👨‍👩‍👧‍👦 Cena in famiglia</div>
+            <div class="contextChip" data-context="romantica">💘 Cena romantica</div>
+            <div class="contextChip" data-context="amici">🍻 Cena tra amici</div>
+            <div class="contextChip" data-context="tema_indiana">🇮🇳 Tema: cucina indiana</div>
+            <div class="contextChip" data-context="tema_cinese">🇨🇳 Tema: cucina cinese</div>
+            <div class="contextChip" data-context="tema_araba">🇸🇦 Tema: cucina araba</div>
+          </div>
+          <div class="hCards" id="contextCards"></div>
+
+          <div class="divider"></div>
+
+          <!-- Per chi sei -->
+          <div class="h2">Per chi sei?</div>
+          <div class="chips" id="personaChips">
+            <div class="chip active" data-value="green">🌱 Green lover</div>
+            <div class="chip" data-value="family">👨‍👩‍👧‍👦 Famiglia</div>
+            <div class="chip" data-value="single">🧍 Single / Coppia</div>
+          </div>
+          <div class="hint" id="personaHint">Suggerimenti: filiere, stagionalità, spreco ridotto.</div>
+
+          <!-- NEW: Social promo section -->
+          <div class="divider"></div>
+          <div class="h2">Dalla community al tuo carrello</div>
+          <div class="p">Scopri ricette condivise da altre persone, leggi commenti e salva le migliori nel tuo profilo con un tap.</div>
+
+          <div class="socialPromo" id="socialPromo">
+            <div class="socialPromoTop">
+              <div>
+                <div class="socialBadge">💬 Area social (in app)</div>
+                <div class="socialTitle">Ispirati, salva, cucina</div>
+                <div class="socialDesc">Le ricette della community diventano la tua spesa: salvale con <strong>+</strong> e aggiungi ingredienti al carrello.</div>
+                <div class="tags">
+                  <span class="tag">community</span>
+                  <span class="tag">recensioni</span>
+                  <span class="tag">salva ricette</span>
+                </div>
+                <div class="postActions" style="margin-top:10px;">
+                  <button class="pillBtn primary" id="openSocialBtn">Apri area social</button>
+                  <button class="pillBtn" id="howItWorksSocial">Come funziona</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Example post -->
+            <div class="postCard" id="socialPostRoberta">
+              <div class="postHeader">
+                <div style="display:flex; gap:10px; align-items:center;">
+                  <div class="avatar">IMG</div>
+                  <div class="author">
+                    <strong>Roberta</strong><br/>
+                    <span>ha condiviso una ricetta</span>
+                  </div>
+                </div>
+                <button class="savePlus" id="savePostPlus" title="Salva ricetta nel profilo">+</button>
+              </div>
+
+              <div class="postBodyTitle">Polpette di ceci (facili)</div>
+              <div class="postBodyText">“Croccanti fuori, morbide dentro. Perfette anche per meal prep.”</div>
+
+              <div class="comment">
+                <span>Commento:</span> “Grazie Roberta, ho provato la tua ricetta ed è stato un successo!”
+              </div>
+
+              <div class="postActions">
+                <button class="pillBtn primary" id="openRobertaRecipe">Apri ricetta</button>
+                <button class="pillBtn" id="addIngredientsRoberta">Aggiungi ingredienti</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggeriti oggi per te -->
+          <div class="divider"></div>
+          <div class="h2" id="suggestedTitle" style="cursor:pointer;">Suggeriti oggi per te <span class="tag" id="activeFilterTag" style="display:none;"></span></div>
+          <div class="p" id="suggestedTeaser">Tocca per scoprire ricette scelte su misura per te: gusti, abitudini e stagione… con qualche promo utile.</div>
+          <div class="cards" id="homeSuggested"></div>
+
+          <!-- Catalogo preview -->
+          <div class="divider"></div>
+          <div class="catHeaderRow">
+            <div class="h2" style="margin:0;">Catalogo</div>
+            <button class="iconBtn" id="goCatalogoCategories" title="Vai alle categorie">☰</button>
+          </div>
+          <div class="p">Esplora per categorie: apri una ricetta al volo oppure entra nella lista categorie.</div>
+
+          <div class="catGrid" id="catalogPreview"></div>
+
+          <div class="btnRow" style="margin-top:14px;">
+            <button class="btn" data-nav="planner">Vai al menu settimanale</button>
+            <button class="btn secondary" data-nav="catalogo">Apri catalogo ricette</button>
+          </div>
+        </div>
+
+        <div class="navBar">
+          <div class="navItem active" data-nav="home">Home</div>
+          <div class="navItem" data-nav="catalogo">Ricette</div>
+          <div class="navItem" data-nav="planner">Menu</div>
+          <div class="navItem" data-nav="spesa">Spesa</div>
+        </div>
+      </div>
+
+      <!-- CATALOGO: Categorie -->
+      <div class="screen" id="catalogo">
+        <div class="content">
+          <div class="h1">Catalogo</div>
+          <div class="breadcrumbs">Catalogo</div>
+          <div class="p">Seleziona una categoria per vedere sottocategorie e ricette.</div>
+
+          <div class="list" id="catalogCategories"></div>
+
+          <div class="btnRow">
+            <button class="btn secondary" data-nav="home">Torna Home</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATALOGO: Categoria -->
+      <div class="screen" id="catalogo_category">
+        <div class="content">
+          <div class="h1" id="catTitle">Categoria</div>
+          <div class="breadcrumbs" id="catCrumbs">Catalogo → Categoria</div>
+          <div class="p">Scegli una sottocategoria.</div>
+
+          <div class="list" id="catalogSubcats"></div>
+
+          <div class="btnRow">
+            <button class="btn secondary" data-nav="catalogo">Indietro (categorie)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATALOGO: Sottocategoria -->
+      <div class="screen" id="catalogo_subcategory">
+        <div class="content">
+          <div class="h1" id="subcatTitle">Sottocategoria</div>
+          <div class="breadcrumbs" id="subcatCrumbs">Catalogo → Categoria → Sottocategoria</div>
+          <div class="p">Seleziona una ricetta per aprire il dettaglio.</div>
+
+          <div class="cards" id="subcatRecipes"></div>
+
+          <div class="btnRow">
+            <button class="btn secondary" id="backToCategoryBtn">Indietro (categoria)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETTAGLIO -->
+      <div class="screen" id="detail">
+        <div class="content">
+          <div class="h1" id="detailTitle">Ricetta</div>
+          <div class="breadcrumbs" id="detailCrumbs">Catalogo → … → Ricetta</div>
+          <div class="p" id="detailText">Placeholder dettaglio ricetta.</div>
+          <div class="btnRow">
+            <button class="btn secondary" id="detailBackBtn">Indietro</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLANNER (placeholder) -->
+      <div class="screen" id="planner">
+        <div class="content">
+          <div class="h1">Menu settimanale (placeholder)</div>
+          <div class="p">Qui andrà il planner.</div>
+          <div class="btnRow">
+            <button class="btn secondary" data-nav="home">Torna Home</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPESA (placeholder) -->
+      <div class="screen" id="spesa">
+        <div class="content">
+          <div class="h1">Lista spesa (placeholder)</div>
+          <div class="p">Qui andrà la lista spesa aggregata.</div>
+          <div class="btnRow">
+            <button class="btn secondary" data-nav="home">Torna Home</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ---------- NAV ----------
+    const tabs = Array.from(document.querySelectorAll('.tab'));
+    const screens = Array.from(document.querySelectorAll('.screen'));
+    let navStack = ["home"];
+
+    function show(id){
+      screens.forEach(s => s.classList.toggle('active', s.id === id));
+      tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.target === id)));
+      document.querySelectorAll('.navItem').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
+      document.querySelector('.phone').scrollIntoView({behavior:'smooth', block:'start'});
+      if (navStack[navStack.length - 1] !== id) navStack.push(id);
+    }
+    function back(){
+      if (navStack.length <= 1) return show("home");
+      navStack.pop();
+      const prev = navStack[navStack.length - 1] || "home";
+      screens.forEach(s => s.classList.toggle('active', s.id === prev));
+      tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.target === prev)));
+      document.querySelectorAll('.navItem').forEach(n => n.classList.toggle('active', n.dataset.nav === prev));
+      document.querySelector('.phone').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.target)));
+    document.querySelectorAll('[data-nav]').forEach(el => el.addEventListener('click', () => show(el.getAttribute('data-nav'))));
+    document.querySelectorAll('.navItem').forEach(el => el.addEventListener('click', () => show(el.getAttribute('data-nav'))));
+
+    // ---------- STATE ----------
+    let selectedPersona = "green";
+    let activeHomeFilter = null;
+    let activeSeason = null;
+
+    const personaHint = document.getElementById('personaHint');
+    const hints = {
+      green: "Suggerimenti: filiere, stagionalità, spreco ridotto.",
+      family: "Suggerimenti: porzioni 3+ persone, ricette semplici, formati convenienza.",
+      single: "Suggerimenti: porzioni piccole, ingredienti riutilizzabili, ricette veloci."
+    };
+
+    // Click message for "Suggeriti oggi per te"
+    const suggestedClickMessage = "Ricette consigliate in base al tuo profilo (health/family/single), ordini recenti, stagionalità e promozioni attive.";
+
+    // ---------- DATA (demo) ----------
+    const HOME_RECIPES = [
+      {id:"p3", name:"Pasta al pesto", time:15, meal:"Primo", tags:["veloce","promo"], why:"Promo attiva + veloce"},
+      {id:"p4", name:"Carbonara (versione chef)", time:20, meal:"Primo", tags:["tradizionale","chef","promo"], why:"Ispirazione chef + promo"},
+      {id:"p9", name:"Pasta e fagioli", time:35, meal:"Primo", tags:["green","salutare"], why:"Stagione + healthy"},
+      {id:"s5", name:"Frittata (verdure di stagione)", time:15, meal:"Secondo", tags:["economica","green","stagionale","febbraio"], why:"Stagionalità (febbraio)"},
+      {id:"a7", name:"Verdure grigliate", time:20, meal:"Antipasto", tags:["green","salutare"], why:"Leggera + green"},
+      {id:"c4", name:"Yogurt e cereali", time:2, meal:"Colazione", tags:["salutare","veloce"], why:"Rapida + colazione"},
+      {id:"s7", name:"Polpette di ceci", time:30, meal:"Secondo", tags:["green","salutare"], why:"Molto amate + green"},
+    ];
+
+    const CATALOG = [
+      { id:"cat_primi", name:"Primi", desc:"Pasta, riso, zuppe",
+        subcategories:[
+          { id:"sub_pasta", name:"Pasta", desc:"Ricette di pasta classiche e veloci", recipes:[
+            {id:"p3", name:"Pasta al pesto", time:15, meal:"Primo", tags:["veloce","promo"]},
+            {id:"p4", name:"Carbonara (versione chef)", time:20, meal:"Primo", tags:["tradizionale","chef","promo"]},
+            {id:"p9", name:"Pasta e fagioli", time:35, meal:"Primo", tags:["green","salutare"]},
+          ]},
+          { id:"sub_riso", name:"Riso", desc:"Risotti e bowl", recipes:[
+            {id:"p6", name:"Risotto ai funghi", time:35, meal:"Primo", tags:["tradizionale"]},
+            {id:"p7", name:"Riso basmati veggie", time:25, meal:"Primo", tags:["green","salutare"]},
+          ]}
+        ]
+      },
+      { id:"cat_secondi", name:"Secondi", desc:"Carne, pesce, uova, veggie",
+        subcategories:[
+          { id:"sub_uova", name:"Uova", desc:"Frittate e omelette", recipes:[
+            {id:"s5", name:"Frittata (verdure di stagione)", time:15, meal:"Secondo", tags:["economica","green","stagionale","febbraio"]},
+            {id:"s6", name:"Omelette semplice", time:10, meal:"Secondo", tags:["veloce"]},
+          ]},
+          { id:"sub_veggie", name:"Veggie", desc:"Secondi vegetali", recipes:[
+            {id:"s7", name:"Polpette di ceci", time:30, meal:"Secondo", tags:["green","salutare"]},
+          ]}
+        ]
+      },
+      { id:"cat_colazione", name:"Colazione", desc:"Dolce e salato",
+        subcategories:[
+          { id:"sub_veloce", name:"Veloce", desc:"Pronte in pochi minuti", recipes:[
+            {id:"c4", name:"Yogurt e cereali", time:2, meal:"Colazione", tags:["salutare","veloce"]},
+            {id:"c5", name:"Toast e frutta", time:5, meal:"Colazione", tags:["veloce"]},
+          ]}
+        ]
+      },
+      { id:"cat_merende", name:"Merende", desc:"Snack e idee leggere",
+        subcategories:[
+          { id:"sub_light", name:"Light", desc:"Merende equilibrate", recipes:[
+            {id:"m1", name:"Frutta + yogurt", time:3, meal:"Merenda", tags:["salutare","veloce"]},
+            {id:"m2", name:"Hummus e verdure", time:10, meal:"Merenda", tags:["green","salutare"]},
+          ]}
+        ]
+      }
+    ];
+
+    // ---------- HOME: Suggeriti oggi per te ----------
+    function scoreGreen(r){ return (r.tags.includes("green")?3:0) + (r.tags.includes("salutare")?2:0) + (r.tags.includes("stagionale")?2:0); }
+    function scoreFamily(r){ return (r.tags.includes("economica")?2:0) + (r.tags.includes("veloce")?2:0); }
+    function scoreSingle(r){ return (r.tags.includes("veloce")?3:0) + (r.tags.includes("economica")?1:0); }
+
+    function renderHomeSuggested(){
+      const box = document.getElementById('homeSuggested');
+      let list = [...HOME_RECIPES];
+
+      if (selectedPersona === "green") list.sort((a,b)=> scoreGreen(b)-scoreGreen(a));
+      if (selectedPersona === "family") list.sort((a,b)=> scoreFamily(b)-scoreFamily(a));
+      if (selectedPersona === "single") list.sort((a,b)=> scoreSingle(b)-scoreSingle(a));
+
+      if (activeHomeFilter) list = list.filter(r => r.tags.includes(activeHomeFilter));
+      if (activeSeason) list = list.filter(r => r.tags.includes(activeSeason));
+
+      const tag = document.getElementById('activeFilterTag');
+      if (activeHomeFilter || activeSeason){
+        tag.style.display = "inline-block";
+        tag.textContent = activeHomeFilter ? `Filtro: ${activeHomeFilter}` : `Stagione: ${activeSeason}`;
+      } else {
+        tag.style.display = "none";
+        tag.textContent = "";
+      }
+
+      box.innerHTML = list.slice(0,6).map(r => `
+        <div class="card" data-open-recipe="${r.id}" data-open-from="homeSuggested">
+          <div class="imgPh"></div>
+          <div>
+            <div class="cardTitle">${r.name}</div>
+            <div class="meta">${r.meal} • ⏱ ${r.time} min ${r.tags.includes("promo") ? " • 🏷️ promo" : ""}</div>
+            <div class="tags">
+              ${(r.tags||[]).slice(0,4).map(t=>`<span class="tag">${t}</span>`).join("")}
+              ${r.why ? `<span class="tag">Perché: ${r.why}</span>` : ""}
+            </div>
+          </div>
+        </div>
+      `).join("") || `<div class="p">Nessun suggerimento con il filtro attuale.</div>`;
+
+      box.querySelectorAll('[data-open-recipe]').forEach(el => {
+        el.addEventListener('click', () => openRecipe(el.getAttribute('data-open-recipe'), "Home → Suggeriti per te → Ricetta"));
+      });
+    }
+
+    function openRecipe(id, crumbs){
+      document.getElementById('detailTitle').textContent = `Ricetta: ${id}`;
+      document.getElementById('detailText').textContent = "Qui nel file completo aprirai la vera scheda ricetta (ingredienti, porzioni, prodotti). Placeholder.";
+      document.getElementById('detailCrumbs').textContent = crumbs || "Catalogo → … → Ricetta";
+      show('detail');
+    }
+
+    // Click handler: show descriptive message on title click
+    document.getElementById('suggestedTitle').addEventListener('click', () => alert(suggestedClickMessage));
+
+    // Persona chips
+    document.getElementById('personaChips').addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip');
+      if(!chip) return;
+      document.querySelectorAll('#personaChips .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      selectedPersona = chip.dataset.value;
+      personaHint.textContent = hints[selectedPersona] || "";
+      renderHomeSuggested();
+    });
+
+    // ---------- Banner carousel ----------
+    const banners = Array.from(document.querySelectorAll('.banner'));
+    const dots = Array.from(document.querySelectorAll('.dot'));
+    const promoBadge = document.getElementById('activePromoBadge');
+    let idx = 0;
+
+    function setBanner(i){
+      idx = (i + banners.length) % banners.length;
+      banners.forEach((b, j) => b.classList.toggle('active', j === idx));
+      dots.forEach((d, j) => d.classList.toggle('active', j === idx));
+      promoBadge.textContent = banners[idx].dataset.promo || "Promo: —";
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', () => setBanner(idx-1));
+    document.getElementById('nextBtn').addEventListener('click', () => setBanner(idx+1));
+    document.getElementById('dotGroup').addEventListener('click', (e) => {
+      const d = e.target.closest('.dot'); if(!d) return;
+      setBanner(Number(d.dataset.dot));
+    });
+
+    document.getElementById('bannerWrap').addEventListener('click', (e) => {
+      const open = e.target.closest('[data-open-recipe]');
+      const filter = e.target.closest('[data-apply-filter]');
+      const season = e.target.closest('[data-apply-season]');
+
+      if (open) openRecipe(open.getAttribute('data-open-recipe'), "Home → In evidenza → Ricetta");
+
+      if (filter){
+        activeSeason = null;
+        activeHomeFilter = filter.getAttribute('data-apply-filter');
+        renderHomeSuggested();
+        alert(`✅ Filtro applicato: ${activeHomeFilter}`);
+      }
+
+      if (season){
+        activeHomeFilter = null;
+        activeSeason = season.getAttribute('data-apply-season');
+        renderHomeSuggested();
+        alert(`✅ Stagionalità applicata: ${activeSeason}`);
+      }
+    });
+
+    setInterval(() => setBanner(idx+1), 6000);
+
+    // ---------- Occasioni & Contesti ----------
+    let activeContext = "famiglia";
+    const CONTEXTS = {
+      famiglia: [
+        { title:"Cena in famiglia (20–30 min)", desc:"Idea completa: primo + secondo easy. Ingredienti ricorrenti, perfetti per risparmio.", tags:["kids","economica","veloce"],
+          primary:{label:"Apri idea menu", action:"openMenu", payload:"famiglia_easy"},
+          secondary:{label:"Vedi ricette", action:"applyContext", payload:"famiglia"} },
+        { title:"Menu “classico italiano”", desc:"Piatto rassicurante + contorno. Ottimo per organizzare la settimana.", tags:["tradizionale","comfort"],
+          primary:{label:"Apri ricetta", action:"openRecipe", payload:"s5"},
+          secondary:{label:"Aggiungi al menu", action:"openPlanner", payload:null} }
+      ],
+      romantica: [
+        { title:"Cena romantica per due", desc:"Ricette più curate ma semplici. Effetto “wow” senza stress.", tags:["chef","tradizionale"],
+          primary:{label:"Apri ricetta (chef)", action:"openRecipe", payload:"p4"},
+          secondary:{label:"Vedi idee", action:"applyContext", payload:"romantica"} },
+        { title:"Aperitivo easy + primo veloce", desc:"Starter + primo. Soluzione completa se hai poco tempo.", tags:["veloce","primo","antipasto"],
+          primary:{label:"Apri ricetta", action:"openRecipe", payload:"p3"},
+          secondary:{label:"Filtra: veloce", action:"applyFilter", payload:"veloce"} }
+      ],
+      amici: [
+        { title:"Cena tra amici (spesa ottimizzata)", desc:"Porzioni grandi e ingredienti condivisi tra piatti.", tags:["comfort","family"],
+          primary:{label:"Apri idea menu", action:"openMenu", payload:"amici_big"},
+          secondary:{label:"Vai a spesa", action:"openSpesa", payload:null} }
+      ],
+      tema_indiana: [
+        { title:"Cena a tema: cucina indiana (MVP)", desc:"Selezione ispirata: spezie, legumi, piatti profumati. (MVP: raccolta guidata)", tags:["tema","spezie"],
+          primary:{label:"Apri raccolta", action:"openCollection", payload:"indiana"},
+          secondary:{label:"Vedi ricette", action:"applyContext", payload:"tema_indiana"} }
+      ],
+      tema_cinese: [
+        { title:"Cena a tema: cucina cinese (MVP)", desc:"Ispirazione per piatti semplici. (MVP: raccolta guidata)", tags:["tema","veloce"],
+          primary:{label:"Apri raccolta", action:"openCollection", payload:"cinese"},
+          secondary:{label:"Filtra: veloce", action:"applyFilter", payload:"veloce"} }
+      ],
+      tema_araba: [
+        { title:"Cena a tema: cucina araba (MVP)", desc:"Idee con legumi e verdure. (MVP: raccolta guidata)", tags:["tema","green"],
+          primary:{label:"Apri raccolta", action:"openCollection", payload:"araba"},
+          secondary:{label:"Filtra: green", action:"applyFilter", payload:"green"} }
+      ]
+    };
+
+    function renderContextCards(){
+      const box = document.getElementById('contextCards');
+      const items = CONTEXTS[activeContext] || [];
+      box.innerHTML = items.map(c => `
+        <div class="hCard">
+          <div class="art">IMG</div>
+          <div class="title">${c.title}</div>
+          <div class="desc">${c.desc}</div>
+          <div class="tags">${(c.tags||[]).slice(0,4).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+          <div class="ctaRow" style="margin-top:10px;">
+            <button class="pillBtn primary" data-action="${c.primary.action}" data-payload="${c.primary.payload ?? ""}">${c.primary.label}</button>
+            <button class="pillBtn" data-action="${c.secondary.action}" data-payload="${c.secondary.payload ?? ""}">${c.secondary.label}</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    document.getElementById('contextChips').addEventListener('click', (e) => {
+      const chip = e.target.closest('.contextChip');
+      if(!chip) return;
+      document.querySelectorAll('.contextChip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeContext = chip.dataset.context;
+      renderContextCards();
+    });
+
+    document.getElementById('contextCards').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if(!btn) return;
+      const action = btn.getAttribute('data-action');
+      const payload = btn.getAttribute('data-payload') || null;
+
+      if (action === "openRecipe") return openRecipe(payload, "Home → Occasioni & contesti → Ricetta");
+      if (action === "openPlanner") return show('planner');
+      if (action === "openSpesa") return show('spesa');
+      if (action === "applyFilter"){
+        activeSeason = null;
+        activeHomeFilter = payload;
+        renderHomeSuggested();
+        alert(`✅ Filtro applicato: ${payload}`);
+        return;
+      }
+      alert("ℹ️ Placeholder: in versione completa qui apri la pagina contesto / menu / raccolta.");
+    });
+
+    // ---------- Social promo interactions ----------
+    document.getElementById('openSocialBtn').addEventListener('click', () => {
+      alert("📲 Placeholder: qui apri l’area Social con feed, commenti e salvataggi ricette.");
+    });
+
+    document.getElementById('howItWorksSocial').addEventListener('click', () => {
+      alert("Come funziona: 1) leggi post 2) premi + per salvare 3) aggiungi ingredienti al carrello 4) ordina.");
+    });
+
+    document.getElementById('savePostPlus').addEventListener('click', () => {
+      alert("✅ Ricetta salvata nel tuo profilo! (Placeholder) Ora puoi aggiungere ingredienti e procedere con la spesa.");
+    });
+
+    document.getElementById('openRobertaRecipe').addEventListener('click', () => {
+      openRecipe("s7", "Home → Community → Ricetta di Roberta");
+    });
+
+    document.getElementById('addIngredientsRoberta').addEventListener('click', () => {
+      alert("🛒 Placeholder: ingredienti aggiunti al carrello. (In versione completa: lista ingredienti + alternative + promo.)");
+    });
+
+    // ---------- HOME: Catalogo preview ----------
+    function renderCatalogPreview(){
+      const box = document.getElementById('catalogPreview');
+      const pick = CATALOG.slice(0,4);
+      box.innerHTML = pick.map(cat => {
+        const firstSub = cat.subcategories[0];
+        const r1 = firstSub?.recipes?.[0];
+        const r2 = firstSub?.recipes?.[1];
+        return `
+          <div class="catTile" data-open-category="${cat.id}">
+            <div class="miniArt">IMG</div>
+            <div class="name">${cat.name}</div>
+            <div class="sub">${cat.desc}</div>
+            ${r1 ? `<div class="miniRecipe" data-open-recipe="${r1.id}" data-cat="${cat.id}" data-sub="${firstSub.id}">${r1.name}<span>⏱ ${r1.time}m</span></div>` : ""}
+            ${r2 ? `<div class="miniRecipe" data-open-recipe="${r2.id}" data-cat="${cat.id}" data-sub="${firstSub.id}">${r2.name}<span>⏱ ${r2.time}m</span></div>` : ""}
+          </div>
+        `;
+      }).join("");
+    }
+
+    document.getElementById('catalogPreview').addEventListener('click', (e) => {
+      const recipeRow = e.target.closest('[data-open-recipe]');
+      const tile = e.target.closest('[data-open-category]');
+      if (recipeRow){
+        const id = recipeRow.getAttribute('data-open-recipe');
+        const catId = recipeRow.getAttribute('data-cat');
+        const subId = recipeRow.getAttribute('data-sub');
+        openCatalogSubcategory(catId, subId);
+        openRecipe(id, `Catalogo → ${getCatName(catId)} → ${getSubName(catId, subId)} → Ricetta`);
+        return;
+      }
+      if (tile){
+        openCatalogCategory(tile.getAttribute('data-open-category'));
+        return;
+      }
+    });
+
+    document.getElementById('goCatalogoCategories').addEventListener('click', () => show('catalogo'));
+
+    // ---------- Catalogo navigation ----------
+    function getCat(catId){ return CATALOG.find(c => c.id === catId); }
+    function getCatName(catId){ return getCat(catId)?.name || "Categoria"; }
+    function getSub(catId, subId){ return getCat(catId)?.subcategories?.find(s => s.id === subId); }
+    function getSubName(catId, subId){ return getSub(catId, subId)?.name || "Sottocategoria"; }
+
+    function renderCatalogCategories(){
+      const box = document.getElementById('catalogCategories');
+      box.innerHTML = CATALOG.map(c => `
+        <div class="listItem" data-cat="${c.id}">
+          <div>
+            <div class="title">${c.name}</div>
+            <div class="desc">${c.desc}</div>
+          </div>
+          <div class="chev">›</div>
+        </div>
+      `).join("");
+    }
+
+    function openCatalogCategory(catId){
+      const cat = getCat(catId);
+      if(!cat) return;
+      document.getElementById('catTitle').textContent = cat.name;
+      document.getElementById('catCrumbs').textContent = `Catalogo → ${cat.name}`;
+      const box = document.getElementById('catalogSubcats');
+      box.innerHTML = (cat.subcategories || []).map(s => `
+        <div class="listItem" data-sub="${s.id}" data-cat="${cat.id}">
+          <div>
+            <div class="title">${s.name}</div>
+            <div class="desc">${s.desc}</div>
+          </div>
+          <div class="chev">›</div>
+        </div>
+      `).join("");
+      show('catalogo_category');
+    }
+
+    function openCatalogSubcategory(catId, subId){
+      const cat = getCat(catId);
+      const sub = getSub(catId, subId);
+      if(!cat || !sub) return;
+
+      document.getElementById('subcatTitle').textContent = sub.name;
+      document.getElementById('subcatCrumbs').textContent = `Catalogo → ${cat.name} → ${sub.name}`;
+
+      const box = document.getElementById('subcatRecipes');
+      box.innerHTML = (sub.recipes || []).map(r => `
+        <div class="card" data-open-recipe="${r.id}" data-cat="${catId}" data-sub="${subId}">
+          <div class="imgPh"></div>
+          <div>
+            <div class="cardTitle">${r.name}</div>
+            <div class="meta">${r.meal} • ⏱ ${r.time} min ${r.tags.includes("promo") ? " • 🏷️ promo" : ""}</div>
+            <div class="tags">${(r.tags||[]).slice(0,4).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+          </div>
+        </div>
+      `).join("");
+
+      document.getElementById('backToCategoryBtn').onclick = () => show('catalogo_category');
+      show('catalogo_subcategory');
+    }
+
+    document.getElementById('catalogCategories').addEventListener('click', (e) => {
+      const item = e.target.closest('[data-cat]');
+      if(!item) return;
+      openCatalogCategory(item.getAttribute('data-cat'));
+    });
+
+    document.getElementById('catalogSubcats').addEventListener('click', (e) => {
+      const item = e.target.closest('[data-sub]');
+      if(!item) return;
+      openCatalogSubcategory(item.getAttribute('data-cat'), item.getAttribute('data-sub'));
+    });
+
+    document.getElementById('subcatRecipes').addEventListener('click', (e) => {
+      const item = e.target.closest('[data-open-recipe]');
+      if(!item) return;
+      const id = item.getAttribute('data-open-recipe');
+      const catId = item.getAttribute('data-cat');
+      const subId = item.getAttribute('data-sub');
+      openRecipe(id, `Catalogo → ${getCatName(catId)} → ${getSubName(catId, subId)} → Ricetta`);
+    });
+
+    // ---------- INIT ----------
+    setBanner(0);
+    renderContextCards();
+    personaHint.textContent = hints[selectedPersona];
+    renderHomeSuggested();
+    renderCatalogPreview();
+    renderCatalogCategories();
+    show('home');
+  </script>
+</body>
+</html>
